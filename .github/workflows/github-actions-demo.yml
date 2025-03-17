@@ -54,6 +54,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set environment variables
+        run: echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> $GITHUB_ENV
+
+
       - name: Install Docker Compose
         run: |
           sudo apt-get update
