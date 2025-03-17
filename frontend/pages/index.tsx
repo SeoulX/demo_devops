@@ -20,7 +20,7 @@ const FetchDataComponent = () => {
   const [data, setData] = useState<{ message: string } | null>(null);
 
   useEffect(() => {
-    // Fetch data from FastAPI backend
+    console.log("Fetching data...from:", API_URL);
     const fetchData = async () => {
       try {
         const response = await fetch(`${API_URL}`);

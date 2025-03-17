@@ -568,7 +568,7 @@ const FetchDataComponent = ()=>{
     const [data, setData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "FetchDataComponent.useEffect": ()=>{
-            // Fetch data from FastAPI backend
+            console.log("Fetching data...from:", API_URL);
             const fetchData = {
                 "FetchDataComponent.useEffect.fetchData": async ()=>{
                     try {
