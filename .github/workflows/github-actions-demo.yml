@@ -60,29 +60,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and Push Backend
-        uses: docker/build-push-action@v3
-        with:
-          context: ./backend
-          registry: docker.io
-          file: backend/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend
-
-      - name: Build and Push Frontend
-        uses: docker/build-push-action@v3
-        with:
-          context: ./frontend
-          registry: docker.io
-          file: frontend/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend
+      - name: Build and Push Docker Images with Compose
+        run: |
+          docker-compose -f docker-compose.yml build
+          docker-compose -f docker-compose.yml push
 
   deploy:
     runs-on: ubuntu-latest

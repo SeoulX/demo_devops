@@ -1,14 +1,14 @@
 version: "3.8"
 services:
   backend:
-    build: ./backend
+    build: "${DOCKER_USERNAME}/demo-exam-app:backend"
     ports:
       - "8000:8000"
     networks:
       - app-network
 
   frontend:
-    build: ./frontend
+    build: "${DOCKER_USERNAME}/demo-exam-app:frontend"
     ports:
       - "3000:3000"
     networks:
