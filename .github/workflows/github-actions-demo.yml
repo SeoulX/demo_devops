@@ -39,11 +39,11 @@ jobs:
         node-version: '18'
 
     - name: Install dependencies NextJS
-      run: 
+      run: |
         cd frontend
         npm install
     
     - name: Run tests NextJS
-      run: 
+      run: |
         cd frontend
         npm run test
