@@ -21,7 +21,7 @@ const FetchDataComponent = () => {
     // Fetch data from FastAPI backend
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/');
+        const response = await fetch('http://18.142.226.154:8000');
         const result = await response.json();
         setData(result);
         console.log("Data fetched:", result);
