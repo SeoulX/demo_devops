@@ -18,7 +18,7 @@ services:
     networks:
       - app-network
     environment:
-      - NEXT_PUBLIC_API_URL=http://http://18.142.226.154:8000/
+      - NEXT_PUBLIC_API_URL=http://18.142.226.154:8000/
     depends_on:
       - backend
 
