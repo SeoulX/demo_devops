@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useState } from 'react';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -21,13 +23,13 @@ const FetchDataComponent = () => {
     // Fetch data from FastAPI backend
     const fetchData = async () => {
       try {
-        const response = await fetch('http://18.142.226.154:8000');
+        const response = await fetch(`${API_URL}`);
         const result = await response.json();
         setData(result);
         console.log("Data fetched:", result);
       } catch (error) {
         console.error("Error fetching data:", error);
-        
+
       }
     };
 
