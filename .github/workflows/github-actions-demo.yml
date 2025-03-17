@@ -47,3 +47,15 @@ jobs:
       run: |
         cd frontend
         npm run test
+  
+  build:
+      runs-on: ubuntu-latest
+      needs: test
+
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker images
+        run: |
+          docker-compose up --build -d
