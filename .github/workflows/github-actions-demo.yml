@@ -105,8 +105,8 @@ jobs:
 
             docker ps -aq | xargs -r docker stop | xargs -r docker rm
 
-            docker pull ${{ secrets.DOCKER_USERNAME }}demo-exam-app:backend
-            docker pull ${{ secrets.DOCKER_USERNAME }}demo-exam-app:frontend
+            docker pull ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend
+            docker pull ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend
 
             docker run -d -p 8000:8000 --name backend ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend
             docker run -d -p 3000:3000 --name frontend ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend
