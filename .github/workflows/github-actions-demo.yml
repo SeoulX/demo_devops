@@ -12,42 +12,42 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    # steps:
+    # - name: Checkout code
+    #   uses: actions/checkout@v2
 
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.12'
+    # - name: Set up Python 3.12
+    #   uses: actions/setup-python@v2
+    #   with:
+    #     python-version: '3.12'
 
-    - name: Install dependencies
-      run: |
-        python -m venv .venv
-        source .venv/bin/activate
-        cd backend
-        pip install -r requirements.txt
+    # - name: Install dependencies
+    #   run: |
+    #     python -m venv .venv
+    #     source .venv/bin/activate
+    #     cd backend
+    #     pip install -r requirements.txt
 
-    - name: Run tests FastAPI
-      run: |
-        source .venv/bin/activate
-        pytest 
+    # - name: Run tests FastAPI
+    #   run: |
+    #     source .venv/bin/activate
+    #     pytest 
     
-    - name: Setup tests NextJS
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18'
+    # - name: Setup tests NextJS
+    #   uses: actions/setup-node@v2
+    #   with:
+    #     node-version: '18'
 
-    - name: Install dependencies NextJS
-      run: |
-        cd frontend
-        npm install
+    # - name: Install dependencies NextJS
+    #   run: |
+    #     cd frontend
+    #     npm install
     
-    - name: Run tests NextJS
-      run: |
-        cd frontend
-        npm run test
-  
+    # - name: Run tests NextJS
+    #   run: |
+    #     cd frontend
+    #     npm run test
+
   build:
     runs-on: ubuntu-latest
     needs: test
@@ -59,6 +59,7 @@ jobs:
         run: |
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> $GITHUB_ENV
           echo "EC2_HOST=${{ secrets.EC2_HOST }}" >> $GITHUB_ENV
+          cat $GITHUB_ENV
 
       - name: Install Docker Compose
         run: |

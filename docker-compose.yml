@@ -19,8 +19,8 @@ services:
       - app-network
     depends_on:
       - backend
-    env_file:
-    - .env
+    environment:
+      - NEXT_PUBLIC_API_URL=http://${EC2_HOST}:8000
 
 networks:
   app-network:
