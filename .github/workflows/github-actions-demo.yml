@@ -104,8 +104,8 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend
             docker pull ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend
 
-            docker run -d -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend
-            docker run -d -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend
-            
+            docker run -d --name backend -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend
+            docker run -d --name frontend -p 3000:3000 -e NEXT_PUBLIC_API_URL=http://${{secrets.EC2_HOST}}:8000 ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend
+   
             docker ps -a
 
