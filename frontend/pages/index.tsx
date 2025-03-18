@@ -2,6 +2,9 @@ import Head from "next/head";
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 import styles from "@/styles/Home.module.css";
+import { useEffect, useState } from 'react';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,7 +16,30 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export default function Home() {
+const FetchDataComponent = () => {
+  const [data, setData] = useState<{ message: string } | null>(null);
+
+  useEffect(() => {
+    console.log("Fetching data...from:", API_URL);
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${API_URL}`);
+        const result = await response.json();
+        setData(result);
+        console.log("Data fetched:", result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <Head>
@@ -34,12 +60,9 @@ export default function Home() {
             height={38}
             priority
           />
-          <ol>
-            <li>
-              Get started by editing <code>pages/index.tsx</code>.
-            </li>
-            <li>Save and see your changes instantly.</li>
-          </ol>
+          <h1 className={styles.title}>
+            {data.message}
+          </h1>
 
           <div className={styles.ctas}>
             <a
@@ -114,4 +137,6 @@ export default function Home() {
       </div>
     </>
   );
-}
+};
+
+export default FetchDataComponent;

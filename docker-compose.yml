@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  backend:
+    build: ./backend
+    image: "${DOCKER_USERNAME}/demo-exam-app:backend"
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build: ./frontend
+    image: "${DOCKER_USERNAME}/demo-exam-app:frontend"
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://${EC2_HOST}:8000
+
+networks:
+  app-network:
+    driver: bridge
