@@ -58,6 +58,9 @@ jobs:
       - name: Set environment variables
         run: echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> $GITHUB_ENV
 
+      - name: Create .env file
+        run: echo "NEXT_PUBLIC_API_URL=${{ secrets.EC2_HOST }}:8000" > .env
+
       - name: Install Docker Compose
         run: |
           sudo apt-get update
