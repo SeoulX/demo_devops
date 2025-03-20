@@ -10,6 +10,6 @@ app.add_middleware(
     allow_headers=["*"], 
 )
 
-@app.get("/")
+@app.get("/get_init")
 async def read_root():
     return {"message": "Hi I am Andrian, learning about Docker Containerization with FastAPI and NextJS"}
