@@ -36,10 +36,6 @@ const FetchDataComponent = () => {
     fetchData();
   }, []);
 
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <>
       <Head>
@@ -60,9 +56,15 @@ const FetchDataComponent = () => {
             height={38}
             priority
           />
-          <h1 className={styles.title}>
-            {data.message}
-          </h1>
+          {!data ? (
+            <h1 className={styles.title}>
+              Loading...
+            </h1>
+          ) : (
+            <h1 className={styles.title}>
+              {data.message}
+            </h1>
+          )}
 
           <div className={styles.ctas}>
             <a
