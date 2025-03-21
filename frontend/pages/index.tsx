@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useState } from 'react';
 
-const API_URL = window.NEXT_PUBLIC_API_URL;
+const API_URL = typeof window !== "undefined" ? window.NEXT_PUBLIC_API_URL : "";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,7 +20,9 @@ const FetchDataComponent = () => {
   const [data, setData] = useState<{ message: string } | null>(null);
 
   useEffect(() => {
-    console.log("Fetching data...from:", API_URL);
+    if (!API_URL) return;
+    console.log("Fetching data... from:", API_URL);
+    
     const fetchData = async () => {
       try {
         const response = await fetch(`${API_URL}`);
@@ -29,10 +31,8 @@ const FetchDataComponent = () => {
         console.log("Data fetched:", result);
       } catch (error) {
         console.error("Error fetching data:", error);
-
       }
     };
-
     fetchData();
   }, []);
 
