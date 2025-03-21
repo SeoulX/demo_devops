@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useState } from 'react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = window.NEXT_PUBLIC_API_URL;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
