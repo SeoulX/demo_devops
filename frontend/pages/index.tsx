@@ -4,9 +4,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { useEffect, useState } from 'react';
 
-const API_URL = typeof window !== "undefined"
-? window.NEXT_PUBLIC_API_URL
-: process.env.NEXT_PUBLIC_API_URL;
+export const dynamic = "force-dynamic";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,23 +20,37 @@ const geistMono = Geist_Mono({
 
 const FetchDataComponent = () => {
   const [data, setData] = useState<{ message: string } | null>(null);
+  const [apiUrl, setApiUrl] = useState("");
+
+  const fetchEnv = async () => {
+    try {
+      const res = await fetch("/api/hello");
+      const json = await res.json();
+      setApiUrl(json.apiUrl);
+      console.log("Fetched API URL:", json.apiUrl);
+    } catch (error) {
+      console.error("Error fetching API URL:", error);
+    }
+  };
 
   useEffect(() => {
-    console.log("Fetching data...from:", API_URL);
+    fetchEnv();
+  }, []);
+
+  useEffect(() => {
+    console.log("Fetching data...from:", apiUrl);
     const fetchData = async () => {
       try {
-        const response = await fetch(`${API_URL}`);
+        const response = await fetch(apiUrl);
         const result = await response.json();
         setData(result);
         console.log("Data fetched:", result);
       } catch (error) {
         console.error("Error fetching data:", error);
-
       }
     };
-
     fetchData();
-  }, []);
+  }, [apiUrl]);
 
   return (
     <>

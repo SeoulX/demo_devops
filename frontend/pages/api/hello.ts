@@ -1,8 +1,9 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import axios from "axios";
+import { NextApiRequest, NextApiResponse } from 'next';
 
-const api = axios.create({
-  baseURL: 'http://18.142.226.154:8000',
-});
+interface Data {
+  apiUrl: string;
+}
 
-export default api;
+export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  res.json({ apiUrl: process.env.NEXT_PUBLIC_API_URL || "Not Set" });
+}
