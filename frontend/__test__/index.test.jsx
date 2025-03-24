@@ -1,19 +1,40 @@
-import '@testing-library/jest-dom'
-import { render, waitFor } from '@testing-library/react'
-import FetchDataComponent from '../pages/index'
+import { render, screen } from "@testing-library/react";
+import Home from "../pages/index";
+import "@testing-library/jest-dom";
+import { useRouter } from "next/router";
 
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    json: () => Promise.resolve({ message: "Hello from API" }),
-  })
-);
+jest.mock("next/router", () => ({
+  useRouter: jest.fn(),
+}));
 
-describe('FetchDataComponent', () => {
-  it('renders the page Home', async () => {
-    const { getByText } = render(<FetchDataComponent />)
-    
-    await waitFor(() => {
-      expect(getByText("Hello from API")).toBeInTheDocument()
-    })
-  })
-})
+describe("Home Page", () => {
+  beforeEach(() => {
+    useRouter.mockReturnValue({
+      pathname: "/",
+    });
+  });
+
+  test("renders the header with title", () => {
+    render(<Home />);
+    expect(screen.getByText("TimeTrack")).toBeInTheDocument();
+  });
+
+  test("renders the main heading", () => {
+    render(<Home />);
+    expect(
+      screen.getByText("Track Your Time, Boost Your Productivity")
+    ).toBeInTheDocument();
+  });
+
+  test("renders feature sections", () => {
+    render(<Home />);
+    expect(screen.getByText("Time Tracking")).toBeInTheDocument();
+    expect(screen.getByText("Team Management")).toBeInTheDocument();
+    expect(screen.getByText("Reports")).toBeInTheDocument();
+  });
+
+  test("renders footer with copyright", () => {
+    render(<Home />);
+    expect(screen.getByText(/TimeTrack. All rights reserved./)).toBeInTheDocument();
+  });
+});
