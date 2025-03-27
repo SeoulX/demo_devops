@@ -114,6 +114,6 @@ jobs:
 
             docker run -d --name backend -p 8000:8000 --env-file .env ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend
 
-            docker run -p 3000:3000 -e "NEXT_PUBLIC_API_URL=http://${{ secrets.EC2_HOST }}:8000" -d --name frontend ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend
+            docker run -p 3000:3000 -e "NEXT_PUBLIC_API_BASE_URL=http://${{ secrets.EC2_HOST }}:8000" -d --name frontend ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend
             docker ps -a
 
