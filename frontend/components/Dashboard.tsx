@@ -80,6 +80,13 @@ export default function Dashboard() {
         .then(([userData, dtrData, dtrRecord]) => {
           setUser(userData);
           setDtrStatus(dtrData);
+
+          if (dtrRecord.length === 0) {
+            console.log("No records found. Allowing user to proceed.");
+            setTimeEntries([]);
+            setWeeklySum([]);
+            return;
+          }
           const initialDTRRecord: { date: any; clock_in: string; clock_out: string; total_work_hours: string }[] = []
           dtrRecord.forEach((entry: { date: any; clock_in: string | number | Date; clock_out: string | number | Date; total_work_hours: string }) => {
             const clock_in_utcDate = new Date(entry.clock_in);
@@ -171,7 +178,6 @@ export default function Dashboard() {
     return () => clearTimeout(timer);
   }, [dtrStatus]);
   
-
   const formatTimeForDisplay = (date: Date) => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   }
