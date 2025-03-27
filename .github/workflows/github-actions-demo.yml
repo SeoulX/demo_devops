@@ -55,26 +55,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set environment variables
-        run: |
-          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> $GITHUB_ENV
+      # - name: Set environment variables
+      #   run: |
+      #     echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> $GITHUB_ENV
 
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-          docker compose version
+      # - name: Install Docker Compose
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y docker-compose
+      #     docker compose version
 
-      - name: Docker Login
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      # - name: Docker Login
+      #   uses: docker/login-action@v3
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker Images with Compose
-        run: |
-          docker-compose -f docker-compose.yml build --pull --no-cache
-          docker-compose -f docker-compose.yml push
+      # - name: Build and Push Docker Images with Compose
+      #   run: |
+      #     docker-compose -f docker-compose.yml build --pull --no-cache
+      #     docker-compose -f docker-compose.yml push
 
   deploy:
     runs-on: ubuntu-latest
@@ -92,6 +92,7 @@ jobs:
             sudo systemctl start docker
             sudo systemctl enable docker
             sudo usermod -aG docker ec2-user
+            newgrp docker
             if ! command -v docker-compose &> /dev/null
             then
               sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
@@ -103,9 +104,16 @@ jobs:
             docker system prune -a -f
             docker pull ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend
             docker pull ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend
-            docker run -d --name backend -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend
-            echo "NEXT_PUBLIC_API_URL=http://${{ secrets.EC2_HOST }}:8000" > .env
+            
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+            echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
+
             cat .env
-            docker run -p 3000:3000 --env-file .env -d --name frontend ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend
+
+            docker run -d --name backend -p 8000:8000 --env-file .env ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend
+
+            docker run -p 3000:3000 -e "NEXT_PUBLIC_API_URL=http://${{ secrets.EC2_HOST }}:8000" -d --name frontend ${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend
             docker ps -a
 
