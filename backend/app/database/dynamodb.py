@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 AWS_REGION = os.getenv("AWS_REGION")
-DYNAMODB_TABLE = "InternsTable"
+DYNAMODB_TABLE_Main = "InternsTable"
+DYNAMODB_TABLE_Record = "DailyTimeRecordsTable"
 
 dynamodb = boto3.resource(
     "dynamodb",
@@ -14,4 +15,5 @@ dynamodb = boto3.resource(
     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY")
 )
 
-table = dynamodb.Table(DYNAMODB_TABLE)
+table_main = dynamodb.Table(DYNAMODB_TABLE_Main)
+table_record = dynamodb.Table(DYNAMODB_TABLE_Record)

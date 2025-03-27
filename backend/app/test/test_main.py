@@ -9,4 +9,4 @@ client = TestClient(app)
 def test_read_root():
     response = client.get("/get_init")
     assert response.status_code == 200
-    assert response.json() == {"message": "Hi I am Andrian, learning about Docker Containerization with FastAPI and NextJS"}
+    assert response.json() == {"message": "Welcome to Intern DTR API"}

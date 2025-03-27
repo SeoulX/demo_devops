@@ -8,6 +8,10 @@ export const SignupSchema = z
     role: z.enum(["Intern", "Admin"], { message: "Role must be 'Intern' or 'Admin'" }),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string(),
+    approval: z.string(),
+    terms: z.boolean().refine((val) => val === true, {
+      message: "You must accept the Terms and Conditions",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords must match",
@@ -15,3 +19,10 @@ export const SignupSchema = z
   });
 
 export type SignupData = z.infer<typeof SignupSchema>;
+
+export const LoginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+export type LoginData = z.infer<typeof LoginSchema>;

@@ -8,7 +8,7 @@ export default function Document() {
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              window.NEXT_PUBLIC_API_URL = "${process.env.NEXT_PUBLIC_API_URL}";
+              Test = "_document";
             `,
           }}
         />

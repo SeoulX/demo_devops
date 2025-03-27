@@ -1,7 +1,23 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    const role = localStorage.getItem("role")
+
+    if (token) {
+      if (role == "Admin"){
+        router.push("/admin");
+      }else{
+        router.push("/dashboard");
+      }
+    }
+  }, []);
   return (
     <div className="flex min-h-screen flex-col">
       <header className="bg-background border-b">
