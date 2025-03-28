@@ -28,23 +28,43 @@ export default function Dashboard() {
   const [totalClockTime, setTotalClockTime] = useState<string | null>(null)
   const [currentTime, setCurrentTime] = useState(new Date())
 
-
   const [user, setUser] = useState<User | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [dtrStatus, setDtrStatus] = useState(null)
   const router = useRouter()
 
   useEffect(() => {
-    const delay = 5000;
+    const delay = 10000;
   
     const timer = setTimeout(() => {
       const token = localStorage.getItem("access_token");
+      const role = localStorage.getItem("role");
+      const approve = localStorage.getItem("approval")
       if (!token) {
         setError("No token found. Please log in.");
         router.push("/");
         return;
       }
-  
+      if (role == "Admin") {
+        router.push("/admin");
+      } else {
+        if(approve == "Pending"){
+          alert("Please wait for approval from the Admin")
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("approval");
+          router.push("/login");
+        }else if(approve == "Rejected"){
+          alert("You've been rejected by the Admin")
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("approval");
+          router.push("/login");
+        }else{
+          router.push("/dashboard");
+        }
+      }
+
       const fetchUser = fetch("/api/user", {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -58,7 +78,6 @@ export default function Dashboard() {
         }
         return res.json();
       });
-  
       const fetchDtrStatus = fetch("/api/check_clock_in&out", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
@@ -81,12 +100,16 @@ export default function Dashboard() {
           setUser(userData);
           setDtrStatus(dtrData);
 
-          if (dtrRecord.length === 0) {
-            console.log("No records found. Allowing user to proceed.");
+          console.log("✅ DTR API Response:", dtrData);
+          console.log("✅ DTR Records:", dtrRecord);
+  
+          if (!Array.isArray(dtrRecord) || dtrRecord.length === 0) {
+            console.warn("⚠ No DTR records found.");
             setTimeEntries([]);
             setWeeklySum([]);
             return;
           }
+
           const initialDTRRecord: { date: any; clock_in: string; clock_out: string; total_work_hours: string }[] = []
           dtrRecord.forEach((entry: { date: any; clock_in: string | number | Date; clock_out: string | number | Date; total_work_hours: string }) => {
             const clock_in_utcDate = new Date(entry.clock_in);
@@ -110,17 +133,29 @@ export default function Dashboard() {
               total_work_hours: entry.total_work_hours + "h"
             });
           });
-          const initialWeekly: { day: string; hours: string }[] = []
+
+          const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+          const weeklyMap = new Map();
+
           dtrRecord.forEach((entry: { date: any; clock_in: string | number | Date; clock_out: string | number | Date; total_work_hours: string }) => {
-            initialWeekly.push({
-              day: new Date(entry.date).toLocaleDateString("en-PH", { weekday: "long", timeZone: "Asia/Manila" }),
-              hours: entry.total_work_hours
-            });
+
+            const days = new Date(entry.date).toLocaleDateString("en-PH", { weekday: "long", timeZone: "Asia/Manila" });
+            weeklyMap.set(days, entry.total_work_hours);
           });
-          console.log(initialDTRRecord)
-          console.log(initialWeekly)
+          const initialWeekly = daysOfWeek.map(day => ({
+            day,
+            hours: weeklyMap.get(day) || "0"
+          }));
+
+          console.log("cauth", initialDTRRecord)
           setTimeEntries(initialDTRRecord)
           setWeeklySum(initialWeekly)
+
+          if (!dtrData || typeof dtrData !== "object" || !dtrData.detail) {
+            console.warn("⚠ No DTR data available.");
+            return;
+          }
 
           const status = dtrData.detail["status"]
   
@@ -363,12 +398,12 @@ export default function Dashboard() {
                         {timeEntries.map((entry) => (
                             <tr key={entry.date} className="border-b">
                             <td className="p-4">{entry.date}</td>
-                            <td className="p-4">{entry.clock_in}</td>
-                            <td className="p-4">{entry.clock_out}</td>
-                            <td className="p-4">{entry.total_work_hours}</td>
+                            <td className="p-4">{entry.clock_in !== "Invalid Date" ? entry.clock_in : "--:--"}</td>
+                            <td className="p-4">{entry.clock_out !== "Invalid Date" ? entry.clock_out : "--:--"}</td>
+                            <td className="p-4">{entry.total_work_hours !== "undefinedh" ? entry.total_work_hours : "0h"}</td>
                             </tr>
                         ))}
-                        </tbody>
+                    </tbody>
                   </table>
                 </div>
               </CardContent>

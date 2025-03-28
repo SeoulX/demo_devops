@@ -46,6 +46,7 @@ export default function LoginPage() {
 
       localStorage.setItem("access_token", result.access_token);
       localStorage.setItem("role", result.role);
+      localStorage.setItem("approval", result.approval);
 
       if (result.role == "Admin") {
         router.push("/admin");
@@ -54,11 +55,13 @@ export default function LoginPage() {
           alert("Please wait for approval from the Admin")
           localStorage.removeItem("access_token");
           localStorage.removeItem("role");
+          localStorage.removeItem("approval");
           router.push("/login");
         }else if(result.approval == "Rejected"){
           alert("You've been rejected by the Admin")
           localStorage.removeItem("access_token");
           localStorage.removeItem("role");
+          localStorage.removeItem("approval");
           router.push("/login");
         }else{
           router.push("/dashboard");

@@ -25,7 +25,7 @@ interface User {
     const [error, setError] = useState<string | null>(null)
     const [internCnt, setInternCnt] = useState<{ role: string; surname: string; name: string; intern_id: string; approval: string; records: { clock_in: string; clock_out: string; status: string; }[]; }[] | null>(null)
     const [pendingCnt, setPendingCnt] = useState<{ role: string; surname: string; name: string; intern_id: string; approval: string; records: { clock_in: string; clock_out: string; status: string; }[]; }[] | null>(null)
-    const [activeCnt, setActiveCnt] = useState<string | null>(null)
+    const [activeCnt, setActiveCnt] = useState<{ role: string; surname: string; name: string; intern_id: string; approval: string; records: { clock_in: string; clock_out: string; status: string; }[]; }[] | null>(null)
     const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
@@ -33,10 +33,33 @@ interface User {
     
       const timer = setTimeout(() => {
         const token = localStorage.getItem("access_token");
+        const role = localStorage.getItem("role")
+        const approve = localStorage.getItem("approval")
+
         if (!token) {
           setError("No token found. Please log in.");
           router.push("/");
           return;
+        }
+
+        if (role == "Admin") {
+          router.push("/admin");
+        } else {
+          if(approve == "Pending"){
+            alert("Please wait for approval from the Admin")
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("role");
+            localStorage.removeItem("approval");
+            router.push("/login");
+          }else if(approve == "Rejected"){
+            alert("You've been rejected by the Admin")
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("role");
+            localStorage.removeItem("approval");
+            router.push("/login");
+          }else{
+            router.push("/dashboard");
+          }
         }
     
         const fetchUser = fetch("/api/user", {
@@ -108,7 +131,7 @@ interface User {
                 (intern) => intern.approval === "Pending"
               );
             setPendingCnt(pendingInterns)
-            console.log(pendingInterns.length)
+            console.log(dtrActiveIntern)
         })  
         .catch((err) => setError(err.message));
     
@@ -124,7 +147,7 @@ interface User {
       return () => clearTimeout(timer);
     }, [dtrStatus]);
 
-  const filteredInterns = internCnt?.filter(
+  const filteredInterns = activeCnt?.filter(
     (intern) =>
       intern.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       intern.intern_id.toLowerCase().includes(searchQuery.toLowerCase())
@@ -297,16 +320,16 @@ interface User {
                             </div>
                           </td>
                           <td className="p-4">
-                            {intern.records.length > 0 
+                            {intern.records.length > 0 && intern.records[intern.records.length - 1].clock_in
                                 ? new Date(new Date(intern.records[intern.records.length - 1].clock_in).getTime() + 8 * 60 * 60 * 1000)
                                     .toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
-                                : "N/A"}
+                                : "--:--"}
                             </td>
                             <td className="p-4">
-                            {intern.records.length > 0 
+                            {intern.records.length > 0 && intern.records[intern.records.length - 1].clock_out
                                 ? new Date(new Date(intern.records[intern.records.length - 1].clock_out).getTime() + 8 * 60 * 60 * 1000)
                                     .toLocaleTimeString("en-PH", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
-                                : "N/A"}
+                                : "--:--"}
                           </td>
                           <td className="p-4">
                             <Badge 
