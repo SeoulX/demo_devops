@@ -1,9 +1,6 @@
-provider "aws" {
-  region = "ap-southeast-1"
-}
 resource "aws_dynamodb_table" "interns" {
-  name           = "InternsTable"
-  billing_mode   = "PAY_PER_REQUEST"
+  name         = var.table_name1
+  billing_mode = "PAY_PER_REQUEST"
 
   attribute {
     name = "intern_id"
@@ -13,13 +10,13 @@ resource "aws_dynamodb_table" "interns" {
   hash_key = "intern_id"
 
   tags = {
-    Name        = "InternsTable"
-    Environment = "Development"
+    Name        = "${var.project_name}-interns"
   }
 }
+
 resource "aws_dynamodb_table" "daily_time_records" {
-  name           = "DailyTimeRecordsTable"
-  billing_mode   = "PAY_PER_REQUEST"
+  name         = var.table_name2
+  billing_mode = "PAY_PER_REQUEST"
 
   attribute {
     name = "intern_id"
@@ -35,7 +32,6 @@ resource "aws_dynamodb_table" "daily_time_records" {
   range_key = "date"
 
   tags = {
-    Name        = "DailyTimeRecordsTable"
-    Environment = "Development"
+    Name        = "${var.project_name}-daily_time_records"
   }
 }
