@@ -31,8 +31,5 @@ variable "table_name1" {
 variable "table_name2" {
   type = string
 }
-variable "dynamodb_table_arns" {
-  type = list(string)
-}
 variable "fastapi_image_url" {}
 variable "nextjs_image_url" {}

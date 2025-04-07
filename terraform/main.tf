@@ -1,4 +1,4 @@
-module "ttVPC" {
+module "VPC" {
   source = "./modules/vpc"
 
   project_name    = var.project_name
@@ -20,12 +20,37 @@ module "Table" {
 module "ECS" {
   source = "./modules/ecs"
 
-  project_name = var.project_name
-  aws_region   = var.aws_region
-  fastapi_image_url   = var.fastapi_image_url
-  nextjs_image_url    = var.nextjs_image_url
+  project_name         = var.project_name
+  aws_region           = var.aws_region
+  fastapi_image_url    = var.fastapi_image_url
+  nextjs_image_url     = var.nextjs_image_url
+  vpc_id               = module.VPC.vpc_id
+  public_subnet_ids    = module.VPC.public_subnet_ids
+  private_subnet_ids   = module.VPC.private_subnet_ids
+
   dynamodb_table_arns = [
-    var.dynamodb_table_arns[0],
-    var.dynamodb_table_arns[1]
+    module.Table.table_name1_arn,
+    module.Table.table_name2_arn
   ]
+
+  alb_sg_id        = module.ALB.alb_sg_id
+  alb_listener_arn = module.ALB.http_listener_arn
+
+  alb_target_group_arns = {
+    fastapi = module.ALB.fastapi_tg_arn
+    nextjs  = module.ALB.nextjs_tg_arn
+  }
+}
+
+
+module "ALB"{
+  source = "./modules/alb"
+
+  project_name      = var.project_name
+  aws_region        = var.aws_region
+  vpc_id            = module.VPC.vpc_id
+  public_subnet_ids = module.VPC.public_subnet_ids
+  private_subnet_ids = module.VPC.private_subnet_ids
+  fastapi_image_url = var.fastapi_image_url
+  nextjs_image_url  = var.nextjs_image_url
 }

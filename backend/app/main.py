@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.auth.routes import router as auth_router
 from app.routes.protected import router as protected_router
 
-app = FastAPI(title="Intern DTR API", version="1.0")
+app = FastAPI(title="Intern DTR API", version="1.0", root_path="/fastapi")
 
 app.add_middleware(
     CORSMiddleware,
