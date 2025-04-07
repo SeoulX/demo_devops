@@ -91,6 +91,24 @@ resource "aws_ecs_task_definition" "fastapi" {
           awslogs-stream-prefix = "ecs"
         }
       }
+      environment = [
+        {
+          name  = "AWS_ACCESS_KEY_ID"
+          value = var.AWS_ACCESS_KEY_ID
+        },
+        {
+          name  = "AWS_SECRET_ACCESS_KEY"
+          value = var.AWS_SECRET_ACCESS_KEY
+        },
+        {
+          name  = "JWT_SECRET"
+          value = var.JWT_SECRET
+        },
+        {
+          name  = "AWS_REGION"
+          value = var.aws_region
+        },
+      ]
     }
   ])
 }
@@ -121,17 +139,15 @@ resource "aws_ecs_task_definition" "nextjs" {
           awslogs-stream-prefix = "ecs"
         }
       }
+      environment = [
+        {
+          name  = "NEXT_PUBLIC_API_BASE_URL"
+          value = "http://${var.alb_dns_name}/fastapi"
+        }
+      ]
     }
   ])
 }
-
-resource "aws_ecr_repository" "repo_backend" {
-  name = "aadinnr/${var.project_name}-backend"
-}
-resource "aws_ecr_repository" "repo_frontend" {
-  name = "aadinnr/${var.project_name}-frontend"
-}
-
 
 resource "aws_ecs_service" "nextjs" {
   name            = "${var.project_name}-nextjs-service"
@@ -151,6 +167,8 @@ resource "aws_ecs_service" "nextjs" {
     container_name   = "nextjs-app"
     container_port   = 3000
   }
+
+  force_new_deployment = true
 
   depends_on = [var.alb_listener_arn]
 }
@@ -173,6 +191,8 @@ resource "aws_ecs_service" "fastapi" {
     container_name   = "fastapi-app"
     container_port   = 8000
   }
+
+  force_new_deployment = true
 
   depends_on = [var.alb_listener_arn]
 }

@@ -33,3 +33,15 @@ variable "table_name2" {
 }
 variable "fastapi_image_url" {}
 variable "nextjs_image_url" {}
+
+variable "JWT_SECRET" {
+  type = string
+}
+
+variable "AWS_ACCESS_KEY_ID" {
+  type = string
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  type = string
+}

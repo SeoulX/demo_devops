@@ -44,8 +44,9 @@ export default function SignupForm() {
 
   const onSubmit = async (data: SignupData) => {
     setServerError(null);
+    
     try {
-      const response = await fetch("/api/signup", {
+      const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

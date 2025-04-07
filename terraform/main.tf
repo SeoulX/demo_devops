@@ -20,13 +20,17 @@ module "Table" {
 module "ECS" {
   source = "./modules/ecs"
 
-  project_name         = var.project_name
-  aws_region           = var.aws_region
-  fastapi_image_url    = var.fastapi_image_url
-  nextjs_image_url     = var.nextjs_image_url
-  vpc_id               = module.VPC.vpc_id
-  public_subnet_ids    = module.VPC.public_subnet_ids
-  private_subnet_ids   = module.VPC.private_subnet_ids
+  project_name          = var.project_name
+  aws_region            = var.aws_region
+  fastapi_image_url     = var.fastapi_image_url
+  nextjs_image_url      = var.nextjs_image_url
+  vpc_id                = module.VPC.vpc_id
+  public_subnet_ids     = module.VPC.public_subnet_ids
+  private_subnet_ids    = module.VPC.private_subnet_ids
+  AWS_ACCESS_KEY_ID     = var.AWS_ACCESS_KEY_ID
+  AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
+  JWT_SECRET            = var.JWT_SECRET
+  alb_dns_name      = module.ALB.alb_dns_name
 
   dynamodb_table_arns = [
     module.Table.table_name1_arn,
@@ -43,14 +47,14 @@ module "ECS" {
 }
 
 
-module "ALB"{
+module "ALB" {
   source = "./modules/alb"
 
-  project_name      = var.project_name
-  aws_region        = var.aws_region
-  vpc_id            = module.VPC.vpc_id
-  public_subnet_ids = module.VPC.public_subnet_ids
+  project_name       = var.project_name
+  aws_region         = var.aws_region
+  vpc_id             = module.VPC.vpc_id
+  public_subnet_ids  = module.VPC.public_subnet_ids
   private_subnet_ids = module.VPC.private_subnet_ids
-  fastapi_image_url = var.fastapi_image_url
-  nextjs_image_url  = var.nextjs_image_url
+  fastapi_image_url  = var.fastapi_image_url
+  nextjs_image_url   = var.nextjs_image_url
 }

@@ -32,3 +32,19 @@ variable "alb_target_group_arns" {
     nextjs  = string
   })
 }
+variable "JWT_SECRET" {
+  type = string
+}
+
+variable "AWS_ACCESS_KEY_ID" {
+  type = string
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  type = string
+}
+
+variable "alb_dns_name" {
+  description = "DNS name of the ALB"
+  type        = string
+}

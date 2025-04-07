@@ -19,3 +19,7 @@ table_name2 = "DailyTimeRecordsTable"
 # The variables are used to configure the ECS
 fastapi_image_url = "docker.io/aadinnr/demo-exam-app:backend"
 nextjs_image_url  = "docker.io/aadinnr/demo-exam-app:frontend"
+
+JWT_SECRET            = "c1a53f5015fe24892ba7f5c7cc71b2e4e359666d1c424f9868d3993e3bf72e91"
+AWS_ACCESS_KEY_ID     = "AKIA4YE2TN3564MEDZOJ"
+AWS_SECRET_ACCESS_KEY = "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"
