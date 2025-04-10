@@ -109,3 +109,8 @@ jobs:
           -var="fastapi_image_url=docker.io/${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend" \
           -var="nextjs_image_url=docker.io/${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend" \
         working-directory: ./terraform
+
+      - name: Terraform Apply
+        run: |
+          terraform apply --auto-approve
+        working-directory: ./terraform
