@@ -108,9 +108,10 @@ jobs:
           -var="AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
           -var="fastapi_image_url=docker.io/${{ secrets.DOCKER_USERNAME }}/demo-exam-app:backend" \
           -var="nextjs_image_url=docker.io/${{ secrets.DOCKER_USERNAME }}/demo-exam-app:frontend" \
+          -out=tfplan
         working-directory: ./terraform
 
       - name: Terraform Apply
         run: |
-          terraform apply --auto-approve
+          terraform apply tfplan --auto-approve
         working-directory: ./terraform
