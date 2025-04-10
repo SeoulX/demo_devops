@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, X } from "lucide-react"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, LoginData } from "../lib/validation";
@@ -75,11 +75,23 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md relative">
+        <Link
+          href="/"
+          className="absolute top-4 right-4 flex h-6 w-6 items-center justify-center rounded-full bg-muted text-muted-foreground shadow-sm hover:bg-primary hover:text-white transition-colors"
+          aria-label="Go back home"
+          >
+          <X className="h-4 w-4" />
+        </Link>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Login</CardTitle>
           <CardDescription>Enter your email and password to access your account</CardDescription>
         </CardHeader>
+        {serverError && (
+            <div className="flex justify-center">
+              <p className="w-1/2 mb-4 p-2 bg-red-100 text-red-700 border border-red-400 rounded text-center">{serverError}</p>
+            </div>
+          )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
             <div className="space-y-2">

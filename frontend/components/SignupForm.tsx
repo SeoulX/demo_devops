@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignupSchema, SignupData } from "../lib/validation";
+import { SignupSchema, SignupData, validatePasswordStrength } from "../lib/validation";
 import { useState } from "react";import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Eye, EyeOff, Shield, UserRound } from "lucide-react"
+import { Eye, EyeOff, X } from "lucide-react"
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +18,14 @@ export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState({
+    isLongEnough: false,
+    containsUppercase: false,
+    containsLowercase: false,
+    containsNumber: false,
+    containsSymbol: false,
+    containsDictionaryWord: false,
+  });
 
   const {
     register,
@@ -41,6 +49,11 @@ export default function SignupForm() {
   });
 
   const watchRole = watch("role");
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = event.target.value;
+    setPasswordStrength(validatePasswordStrength(newPassword));
+  };
 
   const onSubmit = async (data: SignupData) => {
     setServerError(null);
@@ -68,7 +81,14 @@ export default function SignupForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted p-4">
-      <Card className="w-full max-w-md h-full max-h-[90vh] overflow-auto">
+      <Card className="w-full max-w-md h-full max-h-[90vh] overflow-auto relative">
+        <Link
+            href="/"
+            className="absolute top-4 right-4 flex h-6 w-6 items-center justify-center rounded-full bg-muted text-muted-foreground shadow-sm hover:bg-primary hover:text-white transition-colors"
+            aria-label="Go back home"
+            >
+            <X className="h-4 w-4" />
+        </Link>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
           <CardDescription>Enter your information to create a TimeTrack account</CardDescription>
@@ -85,12 +105,18 @@ export default function SignupForm() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstname">First name</Label>
-                <Input id="firstname" {...register("firstname")} aria-invalid={errors.firstname ? "true" : "false"} />
+                <Input id="firstname" 
+                {...register("firstname")} 
+                placeholder="Juan"
+                aria-invalid={errors.firstname ? "true" : "false"} />
                 {errors.firstname && <p className="text-sm text-destructive mt-1">{errors.firstname.message}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="surname">Last name</Label>
-                <Input id="surname" {...register("surname")} aria-invalid={errors.surname ? "true" : "false"} />
+                <Input id="surname" 
+                placeholder="Dela Cruz"
+                {...register("surname")} 
+                aria-invalid={errors.surname ? "true" : "false"} />
                 {errors.surname && <p className="text-sm text-destructive mt-1">{errors.surname.message}</p>}
               </div>
             </div>
@@ -113,6 +139,7 @@ export default function SignupForm() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   {...register("password")}
+                  onChange={handlePasswordChange}
                   aria-invalid={errors.password ? "true" : "false"}
                 />
                 <button
@@ -127,6 +154,24 @@ export default function SignupForm() {
               {errors.password && (
                 <p className="text-sm text-destructive mt-1">{errors.password.message}</p>
               )}
+              <ul className="text-sm text-destructive mt-2">
+                <li className={passwordStrength.isLongEnough ? "text-green-500" : "text-black"}>
+                  - At least 8 characters long (12 or more is better).
+                </li>
+                <li className={passwordStrength.containsUppercase ? "text-green-500" : "text-black"}>
+                  - At least one uppercase letter.
+                </li>
+                <li className={passwordStrength.containsLowercase ? "text-green-500" : "text-black"}>
+                  - At least one lowercase letter.
+                </li>
+                <li className={passwordStrength.containsNumber ? "text-green-500" : "text-black"}>
+                  - At least one number.
+                </li>
+                <li className={passwordStrength.containsSymbol ? "text-green-500" : "text-black"}>
+                  - At least one special character.
+                </li>
+
+              </ul>
             </div>
 
             <div className="space-y-2">

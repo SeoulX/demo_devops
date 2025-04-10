@@ -58,7 +58,7 @@ export default function Home() {
           </div>
         </section>
         <section className="bg-muted py-12 md:py-24 lg:py-32">
-          <div className="container grid gap-6 md:grid-cols-3">
+          <div className="container grid gap-6 md:grid-cols-2">
             <div className="flex flex-col items-center gap-2 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <svg
@@ -103,26 +103,7 @@ export default function Home() {
               <h3 className="text-xl font-bold">Team Management</h3>
               <p className="text-muted-foreground">Manage your team's time records and monitor productivity.</p>
             </div>
-            <div className="flex flex-col items-center gap-2 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-6 w-6"
-                >
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold">Reports</h3>
-              <p className="text-muted-foreground">Generate detailed reports to analyze time spent on projects.</p>
-            </div>
+            
           </div>
         </section>
       </main>

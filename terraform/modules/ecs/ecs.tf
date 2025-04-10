@@ -157,8 +157,8 @@ resource "aws_ecs_service" "nextjs" {
   task_definition = aws_ecs_task_definition.nextjs.arn
 
   network_configuration {
-    subnets         = var.public_subnet_ids
-    assign_public_ip = true
+    subnets         = var.private_subnet_ids
+    assign_public_ip = false
     security_groups = [var.alb_sg_id]
   }
 

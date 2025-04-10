@@ -22,7 +22,29 @@ export type SignupData = z.infer<typeof SignupSchema>;
 
 export const LoginSchema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(8, "Password must be at least 6 characters"),
 });
 
 export type LoginData = z.infer<typeof LoginSchema>;
+
+export const validatePasswordStrength = (password: string) => {
+  const minLength = 8;
+  const maxLength = 12;
+
+  const containsUppercase = /[A-Z]/.test(password);
+  const containsLowercase = /[a-z]/.test(password);
+  const containsNumber = /[0-9]/.test(password);
+  const containsSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  const isLongEnough = password.length >= minLength;  
+  const dictionaryWords = ["password", "123456", "qwerty"];
+  const containsDictionaryWord = dictionaryWords.some((word) => password.toLowerCase().includes(word));
+
+  return {
+    isLongEnough,
+    containsUppercase,
+    containsLowercase,
+    containsNumber,
+    containsSymbol,
+    containsDictionaryWord,
+  };
+};
