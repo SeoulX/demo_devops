@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-AWS_REGION = os.getenv("AWS_REGION")
+AWS_REGION = os.getenv("AWS_REGION", "ap-southeast-1")
 DYNAMODB_TABLE_Main = "InternsTable"
 DYNAMODB_TABLE_Record = "DailyTimeRecordsTable"
 
