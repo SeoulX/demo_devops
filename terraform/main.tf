@@ -30,7 +30,7 @@ module "ECS" {
   AWS_ACCESS_KEY_ID     = var.AWS_ACCESS_KEY_ID
   AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
   JWT_SECRET            = var.JWT_SECRET
-  alb_dns_name      = module.ALB.alb_dns_name
+  alb_dns_name          = module.ALB.alb_dns_name
 
   dynamodb_table_arns = [
     module.Table.table_name1_arn,
