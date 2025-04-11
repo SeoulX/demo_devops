@@ -50,9 +50,7 @@ export default function Home() {
                 <Button size="lg">Get Started</Button>
               </Link>
               <Link href="/login">
-                <Button size="lg" variant="outline">
-                  Login
-                </Button>
+                <Button size="lg" variant="outline">Login</Button>
               </Link>
             </div>
           </div>

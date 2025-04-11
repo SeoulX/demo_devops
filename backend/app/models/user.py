@@ -20,7 +20,7 @@ class UserLogin(BaseModel):
 
 class DailyTimeRecord(BaseModel):
     intern_id: str
-    date: str  # Format: YYYY-MM-DD
+    date: str
     clock_in: Optional[datetime] = None
     clock_out: Optional[datetime] = None
     break_start: Optional[datetime] = None
