@@ -12,9 +12,6 @@ resource "aws_dynamodb_table" "interns" {
   tags = {
     Name        = "${var.project_name}-interns"
   }
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "aws_dynamodb_table" "daily_time_records" {
@@ -36,8 +33,5 @@ resource "aws_dynamodb_table" "daily_time_records" {
 
   tags = {
     Name        = "${var.project_name}-daily_time_records"
-  }
-  lifecycle {
-    prevent_destroy = true
   }
 }
