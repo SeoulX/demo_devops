@@ -70,6 +70,7 @@ export default function SignupForm() {
 
       alert("Signup successful!");
       reset();
+      router.push("/");
     } catch (error: any) {
       setServerError(error.message);
     }

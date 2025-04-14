@@ -3,7 +3,7 @@
 
 # The variables are used to configure the AWS provider
 aws_profile = "default"
-aws_region  = "ap-southeast-1"
+aws_region  = "ap-southeast-2"
 
 # The variables are used to configure the VPC
 project_name    = "dtr-tracker"
