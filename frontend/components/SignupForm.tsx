@@ -1,7 +1,8 @@
-import { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupSchema, SignupData, validatePasswordStrength } from "../lib/validation";
-import { useState } from "react";import Link from "next/link"
+import { useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -47,7 +48,7 @@ export default function SignupForm() {
       terms: false,
     },
   });
-
+ 
   const watchRole = watch("role");
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
