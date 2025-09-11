@@ -18,4 +18,4 @@ app.include_router(auth_router, prefix="/api")
 
 @app.get("/get_init")
 async def root():
-    return {"message": "Welcome to Intern DTR API"}
+    return {"message": "Welcome to Intern DTR APIh"}
