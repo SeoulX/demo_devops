@@ -67,7 +67,7 @@ jobs:
 
       #     echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
       #     echo "TAG=$TAG" >> $GITHUB_ENV
-      - name: Set Docker Image Tag
+      - name: Set Docker Image Tags
         run: |
           # Extract only the repo name (drop the GitHub org/owner)
           REPO_NAME=$(basename "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
