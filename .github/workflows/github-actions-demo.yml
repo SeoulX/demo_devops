@@ -60,10 +60,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # - name: Set Docker Image Tag
+      #   run: |
+      #     REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+      #     TAG=${GITHUB_REF_NAME}   # Will be v0.0.0 (semantic version tag)
+
+      #     echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+      #     echo "TAG=$TAG" >> $GITHUB_ENV
       - name: Set Docker Image Tag
         run: |
-          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          TAG=${GITHUB_REF_NAME}   # Will be v0.0.0 (semantic version tag)
+          # Extract only the repo name (drop the GitHub org/owner)
+          REPO_NAME=$(basename "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          TAG=${GITHUB_REF_NAME}   # e.g., v0.0.3
 
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
           echo "TAG=$TAG" >> $GITHUB_ENV
