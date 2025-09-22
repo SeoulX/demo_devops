@@ -2,7 +2,7 @@ version: "3.8"
 services:
   backend:
     build: ./backend
-    image: "${DOCKER_USERNAME}/demo-exam-app:backend"
+    # image: "${DOCKER_USERNAME}/demo-exam-app:backend"
     # image: "aadinnr/demo-exam-app:backend"
     ports:
       - "8000:8000"
@@ -13,7 +13,7 @@ services:
 
   frontend:
     build: ./frontend
-    image: "${DOCKER_USERNAME}/demo-exam-app:frontend"
+    # image: "${DOCKER_USERNAME}/demo-exam-app:frontend"
     # image: "aadinnr/demo-exam-app:frontend"
     ports:
       - "3000:3000"
