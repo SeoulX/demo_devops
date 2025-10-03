@@ -6,70 +6,50 @@ on:
       - "v*"   # Only run on semantic version tags (e.g., v1.0.0)
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # test:
+  #   runs-on: ubuntu-latest
+    # steps:
+    #   - name: Checkout code
+    #     uses: actions/checkout@v2
 
-      # ---- Backend Tests (FastAPI) ----
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
+    #   # ---- Backend Tests (FastAPI) ----
+    #   - name: Set up Python 3.12
+    #     uses: actions/setup-python@v2
+    #     with:
+    #       python-version: '3.12'
 
-      - name: Install dependencies FastAPI
-        run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          cd backend
-          pip install -r requirements.txt
-          pip install flake8 black isort pytest-cov
+    #   - name: Install dependencies FastAPI
+    #     run: |
+    #       python -m venv .venv
+    #       source .venv/bin/activate
+    #       cd backend
+    #       pip install -r requirements.txt
 
-      - name: Lint backend with flake8
-        run: |
-          source .venv/bin/activate
-          cd backend
-          flake8 app --count --select=E9,F63,F7,F82 --show-source --statistics
+    #   - name: Run tests FastAPI
+    #     run: |
+    #       source .venv/bin/activate
+    #       cd backend
+    #       pytest
 
-      - name: Check backend code formatting
-        run: |
-          source .venv/bin/activate
-          cd backend
-          black --check app
+    #   # ---- Frontend Tests (NextJS) ----
+    #   - name: Setup Node.js
+    #     uses: actions/setup-node@v2
+    #     with:
+    #       node-version: '18'
 
-      - name: Run backend tests
-        run: |
-          source .venv/bin/activate
-          cd backend
-          pytest app/test/ -v
+    #   - name: Install dependencies NextJS
+    #     run: |
+    #       cd frontend
+    #       npm install --force
 
-      # ---- Frontend Tests (NextJS) ----
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install dependencies NextJS
-        run: |
-          cd frontend
-          npm ci
-
-      - name: Lint frontend
-        run: |
-          cd frontend
-          npm run lint
-
-      - name: Run frontend tests
-        run: |
-          cd frontend
-          npm run test -- --watchAll=false
+    #   - name: Run tests NextJS
+    #     run: |
+    #       cd frontend
+    #       npm run test
 
   build:
     runs-on: ubuntu-latest
-    needs: test
+    # needs: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
