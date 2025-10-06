@@ -1,5 +1,20 @@
 version: "3.8"
 services:
+  mongodb:
+    image: mongo:7.0
+    container_name: demo_devops_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: demo_devops
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
   backend:
     build: ./backend
     # image: "${DOCKER_USERNAME}/demo-exam-app:backend"
@@ -8,6 +23,15 @@ services:
       - "8000:8000"
     networks:
       - app-network
+    environment:
+      # External MongoDB
+      MONGODB_URL: mongodb://admin:root123@192.168.39.127:30017/demo_app?authSource=admin
+      DATABASE_NAME: demo_app
+      # Local MongoDB (uncomment to use local container)
+      # MONGODB_URL: mongodb://admin:password123@mongodb:27017/demo_devops?authSource=admin
+      # DATABASE_NAME: demo_devops
+    depends_on:
+      - mongodb
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -21,6 +45,9 @@ services:
       - app-network
     depends_on:
       - backend
+
+volumes:
+  mongodb_data:
 
 networks:
   app-network:
