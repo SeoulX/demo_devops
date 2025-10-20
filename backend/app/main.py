@@ -16,6 +16,7 @@ app.add_middleware(
 app.include_router(protected_router, prefix="/auth")
 app.include_router(auth_router, prefix="/api")
 
+
 @app.get("/get_init")
 async def root():
     return {"message": "Welcome to Intern DTR API"}
