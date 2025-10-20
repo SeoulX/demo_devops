@@ -99,9 +99,6 @@ export default function Dashboard() {
         .then(([userData, dtrData, dtrRecord]) => {
           setUser(userData);
           setDtrStatus(dtrData);
-
-          console.log("✅ DTR API Response:", dtrData);
-          console.log("✅ DTR Records:", dtrRecord);
   
           if (!Array.isArray(dtrRecord) || dtrRecord.length === 0) {
             console.warn("⚠ No DTR records found.");
@@ -148,7 +145,7 @@ export default function Dashboard() {
             hours: weeklyMap.get(day) || "0"
           }));
 
-          console.log("cauth", initialDTRRecord)
+          // console.log("cauth", initialDTRRecord) // Removed debug log
           setTimeEntries(initialDTRRecord)
           setWeeklySum(initialWeekly)
 
@@ -230,7 +227,7 @@ export default function Dashboard() {
             }
         });
         const data = await response.json();
-        console.log(data)
+        // console.log(data) // Removed to avoid printing sensitive data
         if (!response.ok) {
             if (response.status === 400 && data.detail === "You have already clocked in today.") {
                 alert("Already clocked in. Button will be disabled.");
@@ -239,7 +236,7 @@ export default function Dashboard() {
                 alert(data.message)
             }
         } else {
-            console.log("Clocked in successfully:", data);
+            // console.log("Clocked in successfully:", data); // Removed to avoid printing sensitive data
             setClockedIn(true);
             setClockInTime(formattedTime);
             setClockOutTime(null);
@@ -272,7 +269,7 @@ export default function Dashboard() {
                 throw new Error(data.detail || "Clock-out failed");
             }
         } else {
-            console.log("Clocked out successfully:", data);
+            // console.log("Clocked out successfully:", data); // Removed to avoid printing sensitive data
             setClockedIn(false)
             setClockOutTime(formattedTime)
         }

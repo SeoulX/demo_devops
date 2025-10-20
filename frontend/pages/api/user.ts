@@ -14,9 +14,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       method: "GET",
       headers: { Authorization: authHeader },
     });
-
-    console.log("ada", authHeader)
-
     if (!response.ok) {
       const errorData = await response.json();
       return res.status(response.status).json({ message: errorData.detail || "Failed to fetch user data" });

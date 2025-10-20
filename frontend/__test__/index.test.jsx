@@ -89,7 +89,7 @@ describe("Home Page", () => {
     expect(useRouter().push).not.toHaveBeenCalled();
   });
 
-  console.log("hala", screen.debug());
+  // console.log("hala", screen.debug()); // Removed debug log
 
   test("renders 'Get Started' and 'Login' buttons", () => {
     render(<Home />);

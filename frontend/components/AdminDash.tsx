@@ -131,7 +131,6 @@ interface User {
                 (intern) => intern.approval === "Pending"
               );
             setPendingCnt(pendingInterns)
-            console.log(dtrActiveIntern)
         })  
         .catch((err) => setError(err.message));
     
