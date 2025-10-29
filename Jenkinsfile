@@ -56,28 +56,27 @@ pipeline {
         stage('Prepare') {
             steps {
                 script {
-                    // Ensure minikube is running and use its Docker daemon
+                    // Jenkins is running in-cluster, no minikube needed
                     sh '''
-                        echo "Preparing environment..."
+                        echo "Preparing environment (Jenkins running in-cluster)..."
                         
-                        # Check if minikube command exists
-                        if command -v minikube &> /dev/null; then
-                            echo "Minikube found, checking status..."
-                            minikube status || minikube start
-                            echo "Setting up Docker to use minikube's Docker daemon..."
-                            eval $(minikube docker-env)
+                        # Verify kubectl is available (should work in-cluster)
+                        echo "Checking kubectl..."
+                        kubectl version --client || echo "Warning: kubectl not available"
+                        kubectl config current-context || echo "Warning: kubectl context not set"
+                        kubectl cluster-info || echo "Warning: Cannot reach cluster"
+                        
+                        # Check if Docker is available (might need Docker socket mounted)
+                        echo "Checking Docker..."
+                        if command -v docker &> /dev/null; then
+                            docker info | head -5 || echo "Warning: Docker daemon not accessible (may need socket mount)"
                         else
-                            echo "Minikube not found in PATH, assuming environment is pre-configured"
-                            echo "Checking kubectl context..."
-                            kubectl config current-context || echo "Warning: kubectl context not set"
+                            echo "Docker not found - will use alternative build method"
                         fi
                         
-                        # Verify Docker and kubectl are available
-                        echo "Verifying Docker..."
-                        docker info | head -5 || echo "Warning: Docker not accessible"
-                        
-                        echo "Verifying kubectl..."
-                        kubectl version --client || echo "Warning: kubectl not available"
+                        # Verify we're in the right namespace context
+                        echo "Current namespace context:"
+                        kubectl config view --minify --output 'jsonpath={..namespace}' || echo "default"
                     '''
                 }
             }
@@ -90,15 +89,20 @@ pipeline {
                         sh '''
                             echo "Building backend Docker image..."
                             
-                            # Setup Docker environment if minikube is available
-                            if command -v minikube &> /dev/null; then
-                                eval $(minikube docker-env)
+                            # Try to build with Docker (if available)
+                            if command -v docker &> /dev/null && docker info &> /dev/null; then
+                                echo "Using Docker to build image..."
+                                docker build -t ${BACKEND_IMAGE} -t ${BACKEND_IMAGE_LATEST} .
+                                docker images | grep demo-devops-backend
+                                echo "Image built successfully"
+                                echo "NOTE: Ensure imagePullPolicy is set to 'IfNotPresent' or 'Never' in manifests"
                             else
-                                echo "Minikube not found, using default Docker daemon"
+                                echo "ERROR: Docker not available for building images"
+                                echo "For in-cluster Jenkins, you need to:"
+                                echo "  1. Mount Docker socket: /var/run/docker.sock (in Helm values)"
+                                echo "  2. OR use Kaniko for in-cluster building"
+                                exit 1
                             fi
-                            
-                            docker build -t ${BACKEND_IMAGE} -t ${BACKEND_IMAGE_LATEST} .
-                            docker images | grep demo-devops-backend || echo "Image not found in local Docker"
                         '''
                     }
                 }
@@ -112,15 +116,17 @@ pipeline {
                         sh '''
                             echo "Building frontend Docker image..."
                             
-                            # Setup Docker environment if minikube is available
-                            if command -v minikube &> /dev/null; then
-                                eval $(minikube docker-env)
+                            # Try to build with Docker (if available)
+                            if command -v docker &> /dev/null && docker info &> /dev/null; then
+                                echo "Using Docker to build image..."
+                                docker build -t ${FRONTEND_IMAGE} -t ${FRONTEND_IMAGE_LATEST} .
+                                docker images | grep demo-devops-frontend
+                                echo "Image built successfully"
+                                echo "NOTE: Ensure imagePullPolicy is set to 'IfNotPresent' or 'Never' in manifests"
                             else
-                                echo "Minikube not found, using default Docker daemon"
+                                echo "ERROR: Docker not available for building images"
+                                exit 1
                             fi
-                            
-                            docker build -t ${FRONTEND_IMAGE} -t ${FRONTEND_IMAGE_LATEST} .
-                            docker images | grep demo-devops-frontend || echo "Image not found in local Docker"
                         '''
                     }
                 }
@@ -158,21 +164,18 @@ pipeline {
             }
         }
         
-        stage('Deploy to Minikube') {
+        stage('Deploy to Kubernetes') {
             steps {
                 script {
                     sh '''
-                        echo "Deploying to minikube..."
-                        
-                        # Set kubectl context to minikube
-                        kubectl config use-context minikube
+                        echo "Deploying to Kubernetes cluster (in-cluster Jenkins)..."
                         
                         # Function to replace environment variables in manifest files
                         apply_manifest() {
                             local file=$1
                             sed -e "s|\\${K8S_NAMESPACE}|${K8S_NAMESPACE}|g" \
-                                -e "s|\\${BACKEND_IMAGE}|${BACKEND_IMAGE}|g" \
-                                -e "s|\\${FRONTEND_IMAGE}|${FRONTEND_IMAGE}|g" \
+                                -e "s|\\${BACKEND_IMAGE}|${BACKEND_IMAGE_LATEST}|g" \
+                                -e "s|\\${FRONTEND_IMAGE}|${FRONTEND_IMAGE_LATEST}|g" \
                                 $file | kubectl apply -f -
                         }
                         
@@ -201,8 +204,8 @@ pipeline {
                         echo "Service URLs:"
                         kubectl get svc -n ${K8S_NAMESPACE}
                         echo ""
-                        echo "To access the frontend, run:"
-                        echo "  minikube service demo-devops-frontend-svc -n ${K8S_NAMESPACE}"
+                        echo "To access services, use port-forward or ingress:"
+                        echo "  kubectl port-forward svc/demo-devops-frontend-svc 3000:3000 -n ${K8S_NAMESPACE}"
                     '''
                 }
             }
