@@ -1,0 +1,80 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@1559.va_a_533730b_ea_d">
+  <actions/>
+  <description>Build, test, and deploy demo_devops app to minikube</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers>
+        <org.jenkinsci.plugins.gwt.GenericTrigger plugin="generic-webhook-trigger@2.4.1">
+          <spec></spec>
+          <regexpFilterText>$ref</regexpFilterText>
+          <regexpFilterExpression>^refs/heads/main$</regexpFilterExpression>
+          <printPostContent>false</printPostContent>
+          <printContributedVariables>true</printContributedVariables>
+          <causeString>Triggered by push to branch: $branch</causeString>
+          <token>demo-devops-token</token>
+          <tokenCredentialId></tokenCredentialId>
+          <silentResponse>false</silentResponse>
+          <overrideQuietPeriod>false</overrideQuietPeriod>
+          <shouldNotFlatten>false</shouldNotFlatten>
+          <allowSeveralTriggersPerBuild>false</allowSeveralTriggersPerBuild>
+          <genericVariables>
+            <org.jenkinsci.plugins.gwt.GenericTriggerVariable>
+              <key>ref</key>
+              <value>$.ref</value>
+              <expressionType>JSONPath</expressionType>
+              <regexpFilter></regexpFilter>
+              <defaultValue></defaultValue>
+            </org.jenkinsci.plugins.gwt.GenericTriggerVariable>
+            <org.jenkinsci.plugins.gwt.GenericTriggerVariable>
+              <key>branch</key>
+              <value>$.ref</value>
+              <expressionType>JSONPath</expressionType>
+              <regexpFilter>refs/heads/(.*)</regexpFilter>
+              <defaultValue></defaultValue>
+            </org.jenkinsci.plugins.gwt.GenericTriggerVariable>
+            <org.jenkinsci.plugins.gwt.GenericTriggerVariable>
+              <key>commit</key>
+              <value>$.after</value>
+              <expressionType>JSONPath</expressionType>
+              <regexpFilter></regexpFilter>
+              <defaultValue></defaultValue>
+            </org.jenkinsci.plugins.gwt.GenericTriggerVariable>
+            <org.jenkinsci.plugins.gwt.GenericTriggerVariable>
+              <key>repo</key>
+              <value>$.repository.name</value>
+              <expressionType>JSONPath</expressionType>
+              <regexpFilter></regexpFilter>
+              <defaultValue></defaultValue>
+            </org.jenkinsci.plugins.gwt.GenericTriggerVariable>
+          </genericVariables>
+        </org.jenkinsci.plugins.gwt.GenericTrigger>
+      </triggers>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@1694.ve_d6e5e6b_a_c4">
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@5.8.0">
+      <configVersion>2</configVersion>
+      <userRemoteConfigs>
+        <hudson.plugins.git.UserRemoteConfig>
+          <url>https://github.com/SeoulX/demo_devops.git</url>
+          <credentialsId>demo-app-git</credentialsId>
+        </hudson.plugins.git.UserRemoteConfig>
+      </userRemoteConfigs>
+      <branches>
+        <hudson.plugins.git.BranchSpec>
+          <name>*/main</name>
+        </hudson.plugins.git.BranchSpec>
+      </branches>
+      <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+      <submoduleCfg class="empty-list"/>
+      <extensions/>
+    </scm>
+    <scriptPath>Jenkinsfile</scriptPath>
+    <lightweight>false</lightweight>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
+
