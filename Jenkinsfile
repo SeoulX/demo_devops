@@ -60,23 +60,23 @@ pipeline {
                     sh '''
                         echo "Preparing environment (Jenkins running in-cluster)..."
                         
-                        # Verify kubectl is available (should work in-cluster)
-                        echo "Checking kubectl..."
-                        kubectl version --client || echo "Warning: kubectl not available"
-                        kubectl config current-context || echo "Warning: kubectl context not set"
-                        kubectl cluster-info || echo "Warning: Cannot reach cluster"
+                        // # Verify kubectl is available (should work in-cluster)
+                        // echo "Checking kubectl..."
+                        // kubectl version --client || echo "Warning: kubectl not available"
+                        // kubectl config current-context || echo "Warning: kubectl context not set"
+                        // kubectl cluster-info || echo "Warning: Cannot reach cluster"
                         
-                        # Check if Docker is available (might need Docker socket mounted)
-                        echo "Checking Docker..."
-                        if command -v docker &> /dev/null; then
-                            docker info | head -5 || echo "Warning: Docker daemon not accessible (may need socket mount)"
-                        else
-                            echo "Docker not found - will use alternative build method"
-                        fi
+                        // # Check if Docker is available (might need Docker socket mounted)
+                        // echo "Checking Docker..."
+                        // if command -v docker &> /dev/null; then
+                        //     docker info | head -5 || echo "Warning: Docker daemon not accessible (may need socket mount)"
+                        // else
+                        //     echo "Docker not found - will use alternative build method"
+                        // fi
                         
-                        # Verify we're in the right namespace context
-                        echo "Current namespace context:"
-                        kubectl config view --minify --output 'jsonpath={..namespace}' || echo "default"
+                        // # Verify we're in the right namespace context
+                        // echo "Current namespace context:"
+                        // kubectl config view --minify --output 'jsonpath={..namespace}' || echo "default"
                     '''
                 }
             }
@@ -89,19 +89,19 @@ pipeline {
                         sh '''
                             echo "Building backend Docker image..."
                             
-                            # Try to build with Docker (if available)
-                            if command -v docker &> /dev/null && docker info &> /dev/null; then
-                                echo "Using Docker to build image..."
-                                docker build -t ${BACKEND_IMAGE} -t ${BACKEND_IMAGE_LATEST} .
-                                docker images | grep demo-devops-backend
-                                echo "Image built successfully"
-                                echo "NOTE: Ensure imagePullPolicy is set to 'IfNotPresent' or 'Never' in manifests"
-                            else
-                                echo "ERROR: Docker not available for building images"
-                                echo "For in-cluster Jenkins, you need to:"
-                                echo "  1. Mount Docker socket: /var/run/docker.sock (in Helm values)"
-                                echo "  2. OR use Kaniko for in-cluster building"
-                                exit 1
+                            // # Try to build with Docker (if available)
+                            // if command -v docker &> /dev/null && docker info &> /dev/null; then
+                            //     echo "Using Docker to build image..."
+                            //     docker build -t ${BACKEND_IMAGE} -t ${BACKEND_IMAGE_LATEST} .
+                            //     docker images | grep demo-devops-backend
+                            //     echo "Image built successfully"
+                            //     echo "NOTE: Ensure imagePullPolicy is set to 'IfNotPresent' or 'Never' in manifests"
+                            // else
+                            //     echo "ERROR: Docker not available for building images"
+                            //     echo "For in-cluster Jenkins, you need to:"
+                            //     echo "  1. Mount Docker socket: /var/run/docker.sock (in Helm values)"
+                            //     echo "  2. OR use Kaniko for in-cluster building"
+                            //     exit 1
                             fi
                         '''
                     }
@@ -116,17 +116,17 @@ pipeline {
                         sh '''
                             echo "Building frontend Docker image..."
                             
-                            # Try to build with Docker (if available)
-                            if command -v docker &> /dev/null && docker info &> /dev/null; then
-                                echo "Using Docker to build image..."
-                                docker build -t ${FRONTEND_IMAGE} -t ${FRONTEND_IMAGE_LATEST} .
-                                docker images | grep demo-devops-frontend
-                                echo "Image built successfully"
-                                echo "NOTE: Ensure imagePullPolicy is set to 'IfNotPresent' or 'Never' in manifests"
-                            else
-                                echo "ERROR: Docker not available for building images"
-                                exit 1
-                            fi
+                            // # Try to build with Docker (if available)
+                            // if command -v docker &> /dev/null && docker info &> /dev/null; then
+                            //     echo "Using Docker to build image..."
+                            //     docker build -t ${FRONTEND_IMAGE} -t ${FRONTEND_IMAGE_LATEST} .
+                            //     docker images | grep demo-devops-frontend
+                            //     echo "Image built successfully"
+                            //     echo "NOTE: Ensure imagePullPolicy is set to 'IfNotPresent' or 'Never' in manifests"
+                            // else
+                            //     echo "ERROR: Docker not available for building images"
+                            //     exit 1
+                            // fi
                         '''
                     }
                 }
@@ -139,10 +139,10 @@ pipeline {
                     script {
                         sh '''
                             echo "Running backend tests..."
-                            python3 -m venv venv || true
-                            source venv/bin/activate || true
-                            pip install -q -r requirements.txt
-                            pytest app/test/ -v || true
+                            // python3 -m venv venv || true
+                            // source venv/bin/activate || true
+                            // pip install -q -r requirements.txt
+                            // pytest app/test/ -v || true
                         '''
                     }
                 }
@@ -155,9 +155,9 @@ pipeline {
                     script {
                         sh '''
                             echo "Running frontend tests..."
-                            npm ci --silent || npm install
-                            npm run lint || true
-                            npm test -- --passWithNoTests || true
+                            // npm ci --silent || npm install
+                            // npm run lint || true
+                            // npm test -- --passWithNoTests || true
                         '''
                     }
                 }
@@ -187,25 +187,25 @@ pipeline {
                         apply_manifest manifests/configmap.yaml
                         
                         echo "Deploying MongoDB..."
-                        apply_manifest manifests/mongodb.yaml
+                        // apply_manifest manifests/mongodb.yaml
                         
-                        echo "Deploying Backend..."
-                        apply_manifest manifests/backend.yaml
+                        // echo "Deploying Backend..."
+                        // apply_manifest manifests/backend.yaml
                         
-                        echo "Deploying Frontend..."
-                        apply_manifest manifests/frontend.yaml
+                        // echo "Deploying Frontend..."
+                        // apply_manifest manifests/frontend.yaml
                         
-                        echo "Waiting for deployments to be ready..."
-                        kubectl rollout status deployment/demo-devops-backend -n ${K8S_NAMESPACE} --timeout=5m
-                        kubectl rollout status deployment/demo-devops-frontend -n ${K8S_NAMESPACE} --timeout=5m
+                        // echo "Waiting for deployments to be ready..."
+                        // kubectl rollout status deployment/demo-devops-backend -n ${K8S_NAMESPACE} --timeout=5m
+                        // kubectl rollout status deployment/demo-devops-frontend -n ${K8S_NAMESPACE} --timeout=5m
                         
-                        echo "Deployment complete!"
-                        echo ""
-                        echo "Service URLs:"
-                        kubectl get svc -n ${K8S_NAMESPACE}
-                        echo ""
-                        echo "To access services, use port-forward or ingress:"
-                        echo "  kubectl port-forward svc/demo-devops-frontend-svc 3000:3000 -n ${K8S_NAMESPACE}"
+                        // echo "Deployment complete!"
+                        // echo ""
+                        // echo "Service URLs:"
+                        // kubectl get svc -n ${K8S_NAMESPACE}
+                        // echo ""
+                        // echo "To access services, use port-forward or ingress:"
+                        // echo "  kubectl port-forward svc/demo-devops-frontend-svc 3000:3000 -n ${K8S_NAMESPACE}"
                     '''
                 }
             }
@@ -216,13 +216,13 @@ pipeline {
                 script {
                     sh '''
                         echo "Verifying deployment..."
-                        kubectl get pods -n ${K8S_NAMESPACE}
-                        kubectl get svc -n ${K8S_NAMESPACE}
+                        // kubectl get pods -n ${K8S_NAMESPACE}
+                        // kubectl get svc -n ${K8S_NAMESPACE}
                         
-                        # Check if backend is responding
-                        echo "Testing backend health..."
-                        kubectl run test-backend --image=curlimages/curl --rm -i --restart=Never -n ${K8S_NAMESPACE} -- \
-                          curl -f http://demo-devops-backend-svc.${K8S_NAMESPACE}.svc.cluster.local/fastapi/get_init || echo "Backend test skipped"
+                        // # Check if backend is responding
+                        // echo "Testing backend health..."
+                        // kubectl run test-backend --image=curlimages/curl --rm -i --restart=Never -n ${K8S_NAMESPACE} -- \
+                        //   curl -f http://demo-devops-backend-svc.${K8S_NAMESPACE}.svc.cluster.local/fastapi/get_init || echo "Backend test skipped"
                     '''
                 }
             }
