@@ -26,11 +26,13 @@ pipeline {
     }
     
     environment {
-        DOCKER_REGISTRY = 'localhost:5000'
+        // No registry needed - images are built directly into minikube's Docker daemon
         K8S_NAMESPACE = 'demo-apps-jenkins'
-        BACKEND_IMAGE = "${DOCKER_REGISTRY}/demo-devops-backend:${BUILD_NUMBER}"
-        FRONTEND_IMAGE = "${DOCKER_REGISTRY}/demo-devops-frontend:${BUILD_NUMBER}"
-        MINIKUBE_DOCKER = 'minikube'
+        BACKEND_IMAGE = "demo-devops-backend:${BUILD_NUMBER}"
+        FRONTEND_IMAGE = "demo-devops-frontend:${BUILD_NUMBER}"
+        // Also tag as 'latest' for convenience
+        BACKEND_IMAGE_LATEST = "demo-devops-backend:latest"
+        FRONTEND_IMAGE_LATEST = "demo-devops-frontend:latest"
     }
     
     stages {
@@ -74,7 +76,7 @@ pipeline {
                         sh '''
                             echo "Building backend Docker image..."
                             eval $(minikube docker-env)
-                            docker build -t ${BACKEND_IMAGE} -t ${DOCKER_REGISTRY}/demo-devops-backend:latest .
+                            docker build -t ${BACKEND_IMAGE} -t ${BACKEND_IMAGE_LATEST} .
                             docker images | grep demo-devops-backend
                         '''
                     }
@@ -89,7 +91,7 @@ pipeline {
                         sh '''
                             echo "Building frontend Docker image..."
                             eval $(minikube docker-env)
-                            docker build -t ${FRONTEND_IMAGE} -t ${DOCKER_REGISTRY}/demo-devops-frontend:latest .
+                            docker build -t ${FRONTEND_IMAGE} -t ${FRONTEND_IMAGE_LATEST} .
                             docker images | grep demo-devops-frontend
                         '''
                     }
