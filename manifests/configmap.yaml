@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demo-devops-ui-cm
+  namespace: ${K8S_NAMESPACE}
+data:
+  NEXT_PUBLIC_API_BASE_URL: "http://demo-devops-backend-svc.${K8S_NAMESPACE}.svc.cluster.local/fastapi"
+
