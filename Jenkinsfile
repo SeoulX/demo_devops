@@ -102,7 +102,7 @@ pipeline {
                             //     echo "  1. Mount Docker socket: /var/run/docker.sock (in Helm values)"
                             //     echo "  2. OR use Kaniko for in-cluster building"
                             //     exit 1
-                            fi
+                            // fi
                         '''
                     }
                 }
@@ -171,20 +171,20 @@ pipeline {
                         echo "Deploying to Kubernetes cluster (in-cluster Jenkins)..."
                         
                         # Function to replace environment variables in manifest files
-                        apply_manifest() {
-                            local file=$1
-                            sed -e "s|\\${K8S_NAMESPACE}|${K8S_NAMESPACE}|g" \
-                                -e "s|\\${BACKEND_IMAGE}|${BACKEND_IMAGE_LATEST}|g" \
-                                -e "s|\\${FRONTEND_IMAGE}|${FRONTEND_IMAGE_LATEST}|g" \
-                                $file | kubectl apply -f -
-                        }
+                        // apply_manifest() {
+                        //     local file=$1
+                        //     sed -e "s|\\${K8S_NAMESPACE}|${K8S_NAMESPACE}|g" \
+                        //         -e "s|\\${BACKEND_IMAGE}|${BACKEND_IMAGE_LATEST}|g" \
+                        //         -e "s|\\${FRONTEND_IMAGE}|${FRONTEND_IMAGE_LATEST}|g" \
+                        //         $file | kubectl apply -f -
+                        // }
                         
                         # Apply manifests in order
-                        echo "Creating namespace..."
-                        apply_manifest manifests/namespace.yaml
+                        // echo "Creating namespace..."
+                        // apply_manifest manifests/namespace.yaml
                         
-                        echo "Creating ConfigMap..."
-                        apply_manifest manifests/configmap.yaml
+                        // echo "Creating ConfigMap..."
+                        // apply_manifest manifests/configmap.yaml
                         
                         echo "Deploying MongoDB..."
                         // apply_manifest manifests/mongodb.yaml
