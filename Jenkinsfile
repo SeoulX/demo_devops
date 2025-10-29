@@ -52,9 +52,9 @@ pipeline {
             steps {
                 dir('backend') {
                     script {
-                        sh '''
-                            echo "Building backend Docker image..."
-                        '''
+                        def backendImage = docker.build("${BACKEND_IMAGE_LATEST}", ".")
+                        backendImage.tag("${BACKEND_IMAGE}")
+                        echo "Backend image built: ${BACKEND_IMAGE} and ${BACKEND_IMAGE_LATEST}"
                     }
                 }
             }
@@ -63,9 +63,9 @@ pipeline {
             steps {
                 dir('frontend') {
                     script {
-                        sh '''
-                            echo "Building frontend Docker image..."
-                        '''
+                        def frontendImage = docker.build("${FRONTEND_IMAGE_LATEST}", ".")
+                        frontendImage.tag("${FRONTEND_IMAGE}")
+                        echo "Frontend image built: ${FRONTEND_IMAGE} and ${FRONTEND_IMAGE_LATEST}"
                     }
                 }
             }
