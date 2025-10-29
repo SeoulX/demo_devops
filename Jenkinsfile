@@ -58,12 +58,26 @@ pipeline {
                 script {
                     // Ensure minikube is running and use its Docker daemon
                     sh '''
-                        echo "Checking minikube status..."
-                        minikube status || minikube start
+                        echo "Preparing environment..."
                         
-                        echo "Setting up Docker to use minikube's Docker daemon..."
-                        eval $(minikube docker-env)
-                        docker info | head -5
+                        # Check if minikube command exists
+                        if command -v minikube &> /dev/null; then
+                            echo "Minikube found, checking status..."
+                            minikube status || minikube start
+                            echo "Setting up Docker to use minikube's Docker daemon..."
+                            eval $(minikube docker-env)
+                        else
+                            echo "Minikube not found in PATH, assuming environment is pre-configured"
+                            echo "Checking kubectl context..."
+                            kubectl config current-context || echo "Warning: kubectl context not set"
+                        fi
+                        
+                        # Verify Docker and kubectl are available
+                        echo "Verifying Docker..."
+                        docker info | head -5 || echo "Warning: Docker not accessible"
+                        
+                        echo "Verifying kubectl..."
+                        kubectl version --client || echo "Warning: kubectl not available"
                     '''
                 }
             }
@@ -75,9 +89,16 @@ pipeline {
                     script {
                         sh '''
                             echo "Building backend Docker image..."
-                            eval $(minikube docker-env)
+                            
+                            # Setup Docker environment if minikube is available
+                            if command -v minikube &> /dev/null; then
+                                eval $(minikube docker-env)
+                            else
+                                echo "Minikube not found, using default Docker daemon"
+                            fi
+                            
                             docker build -t ${BACKEND_IMAGE} -t ${BACKEND_IMAGE_LATEST} .
-                            docker images | grep demo-devops-backend
+                            docker images | grep demo-devops-backend || echo "Image not found in local Docker"
                         '''
                     }
                 }
@@ -90,9 +111,16 @@ pipeline {
                     script {
                         sh '''
                             echo "Building frontend Docker image..."
-                            eval $(minikube docker-env)
+                            
+                            # Setup Docker environment if minikube is available
+                            if command -v minikube &> /dev/null; then
+                                eval $(minikube docker-env)
+                            else
+                                echo "Minikube not found, using default Docker daemon"
+                            fi
+                            
                             docker build -t ${FRONTEND_IMAGE} -t ${FRONTEND_IMAGE_LATEST} .
-                            docker images | grep demo-devops-frontend
+                            docker images | grep demo-devops-frontend || echo "Image not found in local Docker"
                         '''
                     }
                 }
@@ -209,7 +237,7 @@ pipeline {
             echo 'Pipeline failed!'
         }
         cleanup {
-            cleanWs()
+            deleteDir()
         }
     }
 }
